@@ -29,6 +29,49 @@ func TestMap(t *testing.T) {
 		}
 		AssertStrings(t, got, want)
 	})
+	t.Run("update the value for same key", func(t *testing.T) {
+		dictionary := Dictionary{"hello": "world"}
+		want := "key updated"
+		got, err := dictionary.Update("hello", "Peter")
+		if err != nil {
+			t.Fatal("word not updated man", err)
+		}
+		AssertStrings(t, got, want)
+
+		definition, err := dictionary.Search("hello")
+		if err != nil {
+			t.Fatal("could not find updated word:", err)
+		}
+		AssertStrings(t, definition, "Peter")
+	})
+	t.Run("update the value but key not there", func(t *testing.T) {
+		dictionary := Dictionary{"hello": "world"}
+		want := "key not found"
+		_, err := dictionary.Update("Parker", "Peter")
+		if err == nil {
+			t.Fatal("expected an error but got nil", err)
+		}
+		AssertStrings(t, err.Error(), want)
+	})
+	t.Run("deleting the existing key-value pair ", func(t *testing.T) {
+		dictionary := Dictionary{"hello": "world"}
+		want := "key deleted"
+		got, err := dictionary.Delete("hello")
+		if err != nil {
+			t.Fatal("could not find word:", err)
+		}
+		AssertStrings(t,got,want)
+	})
+	t.Run("deleting the word not present", func(t *testing.T) {
+		dictionary := Dictionary{}
+		want:="key not found"
+		got,err:=dictionary.Delete("hello")
+		if err==nil{
+			t.Fatal("expected error but got nil")
+		}
+		AssertStrings(t,got,want)
+
+	})
 
 }
 func AssertStrings(t testing.TB, got, want string) {
